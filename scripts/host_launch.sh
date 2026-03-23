@@ -11,7 +11,7 @@ for arg in "$@"; do
   esac
 done
 
-dotnet build -c Release MieMod.csproj
+dotnet build -c Release QuickReload.csproj
 if [ "$disable_remote_debug" = true ]; then
   open -n ~/Library/Application\ Support/Steam/steamapps/common/Slay\ the\ Spire\ 2/SlayTheSpire2.app --args --force-steam off --fastmp=host
 else

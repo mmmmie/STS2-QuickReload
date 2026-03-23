@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Godot;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Multiplayer;
@@ -20,23 +19,23 @@ using MegaCrit.Sts2.Core.Platform;
 using MegaCrit.Sts2.Core.Platform.Steam;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
-using MieMod.QuickRestart.Multiplayer;
+using QuickReload.Multiplayer;
 
-namespace MieMod.QuickRestart;
+namespace QuickReload;
 
-static class QuickRestartRunner
+static class QuickReloadRunner
 {
     public static async Task RestartAsync(NPauseMenu pauseMenu)
     {
         if (RunManager.Instance.IsSinglePlayerOrFakeMultiplayer)
         {
-            Log.Info("[MIEMOD]: Single player run detected, restarting.");
+            Log.Info("[QUICKRELOAD]: Single player run detected, restarting.");
             DisablePauseMenuButtons(pauseMenu);
             await RestartSinglePlayer();
         }
         else
         {
-            Log.Info("[MIEMOD]: Multiplayer run detected, restarting.");
+            Log.Info("[QUICKRELOAD]: Multiplayer run detected, restarting.");
             DisablePauseMenuButtons(pauseMenu);
             await RestartMultiPlayer();
         }
@@ -52,12 +51,12 @@ static class QuickRestartRunner
         {
             ReadSaveResult<SerializableRun>? readRunSaveResult = SaveManager.Instance.LoadRunSave();
             serializableRun = readRunSaveResult.SaveData
-                              ?? throw new InvalidOperationException("[MIEMOD]: Run save data was null.");
+                              ?? throw new InvalidOperationException("[QUICKRELOAD]: Run save data was null.");
             runState = RunState.FromSerializable(serializableRun);
         }
         catch (Exception ex)
         {
-            Log.Error($"[MIEMOD]: Save validation failed: {ex}");
+            Log.Error($"[QUICKRELOAD]: Save validation failed: {ex}");
             return;
         }
 
@@ -78,7 +77,7 @@ static class QuickRestartRunner
         }
         catch (Exception ex)
         {
-            Log.Error($"[MIEMOD]: Run load failed after cleanup: {ex}");
+            Log.Error($"[QUICKRELOAD]: Run load failed after cleanup: {ex}");
             await game.ReturnToMainMenu();
         }
     }
@@ -86,11 +85,11 @@ static class QuickRestartRunner
     private static async Task RestartMultiPlayer()
     {
         var game = NGame.Instance ??
-                   throw new InvalidOperationException("[MIEMOD]: NGame.Instance was null during quick restart.");
+                   throw new InvalidOperationException("[QUICKRELOAD]: NGame.Instance was null during quick restart.");
 
         if (CommandLineHelper.HasArg("fastmp"))
         {
-            Log.Warn("[MIEMOD]: fastmp not implemented.");
+            Log.Warn("[QUICKRELOAD]: fastmp not implemented.");
             return;
         }
         var netService = RunManager.Instance.NetService;
@@ -98,12 +97,12 @@ static class QuickRestartRunner
         {
             ulong playerId = Steamworks.SteamUser.GetSteamID().m_SteamID;
 
-            netService.SendMessage(new QuickRestartMessage { playerId = playerId });
-            Log.Info($"[MIEMOD]: Sent QuickRestartMessage before cleanup. playerId={playerId}");
+            netService.SendMessage(new QuickReloadMessage { playerId = playerId });
+            Log.Info($"[QUICKRELOAD]: Sent QuickReloadMessage before cleanup. playerId={playerId}");
         }
         else
         {
-            Log.Warn("[MIEMOD]: Net service not connected before cleanup, skipping QuickRestartMessage.");
+            Log.Warn("[QUICKRELOAD]: Net service not connected before cleanup, skipping QuickReloadMessage.");
         }
 
         await game.Transition.FadeOut(0.3f);
@@ -125,11 +124,11 @@ static class QuickRestartRunner
             SaveManager.Instance.LoadAndCanonicalizeMultiplayerRunSave(localPlayerId);
         if (!readSaveResult.Success || readSaveResult.SaveData == null)
         {
-            Log.Warn("[MIEMOD]: Broken multiplayer run save detected, big problem");
+            Log.Warn("[QUICKRELOAD]: Broken multiplayer run save detected, big problem");
             return;
         }
 
-        QuickRestartState.SetAutoReady(true);
+        QuickReloadState.SetAutoReady(true);
         multiplayerSubmenu.StartHost(readSaveResult.SaveData);
     }
 
@@ -138,14 +137,14 @@ static class QuickRestartRunner
         var currentRunSaveTask = SaveManager.Instance.CurrentRunSaveTask;
         if (currentRunSaveTask != null)
         {
-            Log.Info("[MIEMOD]: Saving in progress, waiting for it to be finished before quick restart.");
+            Log.Info("[QUICKRELOAD]: Saving in progress, waiting for it to be finished before quick restart.");
             try
             {
                 await currentRunSaveTask;
             }
             catch (Exception ex)
             {
-                Log.Error($"[MIEMOD]: Save task failed while waiting to quick restart: {ex}");
+                Log.Error($"[QUICKRELOAD]: Save task failed while waiting to quick restart: {ex}");
             }
         }
     }

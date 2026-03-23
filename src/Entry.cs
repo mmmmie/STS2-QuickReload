@@ -3,16 +3,16 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Modding;
 
-namespace MieMod;
+namespace QuickReload;
 
 [ModInitializer("Init")]
 public class Entry
 {
     public static void Init()
     {
-        var harmony = new Harmony("QuickRestart");
+        var harmony = new Harmony("QuickReload");
         harmony.PatchAll();
         ScriptManagerBridge.LookupScriptsInAssembly(typeof(Entry).Assembly);
-        Log.Info("[MIEMOD]: QuickStart mod initialized!");
+        Log.Info("[QUICKRELOAD]: QuickReload mod initialized!");
     }
 }

@@ -2,9 +2,9 @@ using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Multiplayer.Serialization;
 using MegaCrit.Sts2.Core.Multiplayer.Transport;
 
-namespace MieMod.QuickRestart.Multiplayer;
+namespace QuickReload.Multiplayer;
 
-public struct QuickRestartMessage :
+public struct QuickReloadMessage :
     INetMessage,
     IPacketSerializable
 {
@@ -28,6 +28,6 @@ public struct QuickRestartMessage :
 
     public override string ToString()
     {
-        return $"[MIEMOD]: QuickRestartMessage: playerId={playerId}";
+        return $"[QUICKRELOAD]: QuickReloadMessage: playerId={playerId}";
     }
 }

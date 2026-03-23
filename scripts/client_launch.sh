@@ -11,8 +11,7 @@ for arg in "$@"; do
   esac
 done
 
-dotnet build -c Release MieMod.csproj
-#open -n ~/Library/Application\ Support/Steam/steamapps/common/Slay\ the\ Spire\ 2/SlayTheSpire2.app --args -nd --fastmp=join --clientId=1001
+dotnet build -c Release QuickReload.csproj
 if [ "$disable_remote_debug" = true ]; then
   open -n ~/Library/Application\ Support/Steam/steamapps/common/Slay\ the\ Spire\ 2/SlayTheSpire2.app --args --force-steam off --clientId=1001
 else

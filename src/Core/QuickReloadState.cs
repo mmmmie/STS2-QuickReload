@@ -1,6 +1,6 @@
-namespace MieMod.QuickRestart;
+namespace QuickReload;
 
-internal static class QuickRestartState
+internal static class QuickReloadState
 {
     private static readonly object Sync = new();
 

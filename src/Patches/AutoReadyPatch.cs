@@ -8,7 +8,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 using MegaCrit.Sts2.Core.Nodes.Screens.CustomRun;
 using MegaCrit.Sts2.Core.Nodes.Screens.DailyRun;
 
-namespace MieMod.QuickRestart;
+namespace QuickReload;
 
 [HarmonyPatch]
 static class AutoReadyPatch
@@ -23,23 +23,23 @@ static class AutoReadyPatch
 
     static void Postfix(object __instance)
     {
-        if (!QuickRestartState.TryConsumePendingAutoReady())
+        if (!QuickReloadState.TryConsumePendingAutoReady())
         {
-            Log.Info("[MIEMOD]: AutoReady postfix called, but no pending restart or autoReady is false.");
+            Log.Info("[QUICKRELOAD]: AutoReady postfix called, but no pending restart or autoReady is false.");
             return;
         }
-        QuickRestartState.Clear();
+        QuickReloadState.Clear();
 
         if (__instance is not Godot.Node node)
         {
-            Log.Warn("[MIEMOD]: AutoReady postfix called, but instance is not a Godot.Node.");
+            Log.Warn("[QUICKRELOAD]: AutoReady postfix called, but instance is not a Godot.Node.");
             return;
         }
 
         var confirm = node.GetNodeOrNull<NButton>((Godot.NodePath)"ConfirmButton");
         if (confirm == null)
         {
-            Log.Warn("[MIEMOD]: AutoReady postfix called, but ConfirmButton not found.");
+            Log.Warn("[QUICKRELOAD]: AutoReady postfix called, but ConfirmButton not found.");
             return;
         }
 

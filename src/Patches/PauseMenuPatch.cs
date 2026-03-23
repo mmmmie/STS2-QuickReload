@@ -9,32 +9,32 @@ using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens.PauseMenu;
 using MegaCrit.Sts2.Core.Runs;
 
-namespace MieMod.QuickRestart;
+namespace QuickReload;
 
 [HarmonyPatch(typeof(NPauseMenu), nameof(NPauseMenu._Ready))]
-static class QuickRestartPatch
+static class QuickReloadPauseMenuPatch
 {
-    private const string QuickRestartNodeName = "MieMod_QuickRestartButton";
+    private const string QuickReloadNodeName = "QuickReload_QuickReloadButton";
     private static readonly LocString RestartLoc = new("gameplay_ui", "PAUSE_MENU.RESTART");
 
     static void Postfix(NPauseMenu __instance)
     {
         if (RunManager.Instance.NetService.Type == NetGameType.Client)
         {
-            Log.Info("[MIEMOD]: Quick Restart: client run detected, skipping button addition.");
+            Log.Info("[QUICKRELOAD]: Quick Restart: client run detected, skipping button addition.");
             return;
         }
 
         var buttonContainer = __instance.GetNodeOrNull<VBoxContainer>("PanelContainer/ButtonContainer");
         if (buttonContainer == null)
         {
-            Log.Warn("[MIEMOD]: Quick Restart: couldn't find button container.");
+            Log.Warn("[QUICKRELOAD]: Quick Restart: couldn't find button container.");
             return;
         }
 
-        if (buttonContainer.GetNodeOrNull<Node>(QuickRestartNodeName) != null)
+        if (buttonContainer.GetNodeOrNull<Node>(QuickReloadNodeName) != null)
         {
-            Log.Warn("[MIEMOD]: Quick Restart: button already exists, skipping.");
+            Log.Warn("[QUICKRELOAD]: Quick Restart: button already exists, skipping.");
             return;
         }
 
@@ -47,11 +47,11 @@ static class QuickRestartPatch
 
         if (restartButton == null)
         {
-            Log.Warn("[MIEMOD]: Quick Restart: failed to duplicate template button.");
+            Log.Warn("[QUICKRELOAD]: Quick Restart: failed to duplicate template button.");
             return;
         }
 
-        restartButton.Name = QuickRestartNodeName;
+        restartButton.Name = QuickReloadNodeName;
         restartButton.GetNode<MegaLabel>("Label").SetTextAutoSize(RestartLoc.GetFormattedText());
         MakeVisualsUnique(restartButton);
 
@@ -63,10 +63,10 @@ static class QuickRestartPatch
 
         restartButton.Connect(
             NClickableControl.SignalName.Released,
-            Callable.From<NButton>(_ => OnQuickRestartPressed(__instance))
+            Callable.From<NButton>(_ => OnQuickReloadPressed(__instance))
         );
 
-        Log.Info("[MIEMOD]: Quick Restart button added.");
+        Log.Info("[QUICKRELOAD]: Quick Restart button added.");
     }
 
     private static void ConnectFocusNeighbors(VBoxContainer buttonContainer, NPauseMenuButton restartButton)
@@ -83,7 +83,7 @@ static class QuickRestartPatch
         var index = buttons.IndexOf(restartButton);
         if (index <= 0 || index >= buttons.Count - 1)
         {
-            Log.Warn("[MIEMOD]: Quick Restart: unexpected button ordering, skipping focus neighbor update.");
+            Log.Warn("[QUICKRELOAD]: Quick Restart: unexpected button ordering, skipping focus neighbor update.");
             return;
         }
 
@@ -111,9 +111,9 @@ static class QuickRestartPatch
         }
     }
 
-    private static void OnQuickRestartPressed(NPauseMenu pauseMenu)
+    private static void OnQuickReloadPressed(NPauseMenu pauseMenu)
     {
-        Log.Info("[MIEMOD]: Quick Restart pressed.");
-        TaskHelper.RunSafely(QuickRestartRunner.RestartAsync(pauseMenu));
+        Log.Info("[QUICKRELOAD]: Quick Restart pressed.");
+        TaskHelper.RunSafely(QuickReloadRunner.RestartAsync(pauseMenu));
     }
 }

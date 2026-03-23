@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MieMod", "MieMod.csproj", "{B2F63DB2-42DF-4FC8-8772-CA1E90C6E3DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickReload", "QuickReload.csproj", "{B2F63DB2-42DF-4FC8-8772-CA1E90C6E3DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

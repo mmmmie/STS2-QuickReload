@@ -10,13 +10,13 @@ config_version=5
 
 [application]
 
-config/name="MieMod"
+config/name="QuickReload"
 config/features=PackedStringArray("4.5", "C#", "Mobile")
 config/icon="res://icon.svg"
 
 [dotnet]
 
-project/assembly_name="MieMod"
+project/assembly_name="QuickReload"
 
 [rendering]
 

@@ -10,7 +10,7 @@ metadata={
 
 [deps]
 
-source_file="res://MieMod/mod_image.png"
+source_file="res://QuickReload/mod_image.png"
 dest_files=["res://.godot/imported/mod_image.png-7ff1336fd0bbdbbfb89134d710122e82.ctex"]
 
 [params]

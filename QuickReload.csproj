@@ -7,7 +7,7 @@
         <DefaultItemExcludes>$(DefaultItemExcludes);packages/**</DefaultItemExcludes>
         <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
         <PathMap>$(AppOutputBase)=.\</PathMap>
-        <RootNamespace>MieMod</RootNamespace>
+        <RootNamespace>QuickReload</RootNamespace>
     </PropertyGroup>
 
     <!-- macOS -->
@@ -39,7 +39,7 @@
             <HintPath>$(Sts2DataDir)/sts2.dll</HintPath>
             <Private>false</Private>
         </Reference>
-        <AdditionalFiles Include="MieMod/localization/**/*.json"/>
+        <AdditionalFiles Include="QuickReload/localization/**/*.json"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -58,7 +58,7 @@
     <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
         <Message Text="Copying .dll and manifest to mods folder." Importance="high"/>
         <Copy SourceFiles="$(ModDllDeploySource)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
-        <Copy SourceFiles="MieMod.json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
+        <Copy SourceFiles="QuickReload.json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
     </Target>
 
     <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
