@@ -26,3 +26,9 @@ obj/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Archives
+QuickReload.zip
+
+# Logs
+*.log
