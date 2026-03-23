@@ -8,7 +8,7 @@ public struct QuickRestartMessage :
     INetMessage,
     IPacketSerializable
 {
-    public ulong lobbyId;
+    public ulong playerId;
 
     public bool ShouldBroadcast => true;
 
@@ -18,16 +18,16 @@ public struct QuickRestartMessage :
 
     public void Serialize(PacketWriter writer)
     {
-        writer.WriteULong(lobbyId);
+        writer.WriteULong(playerId);
     }
 
     public void Deserialize(PacketReader reader)
     {
-        this.lobbyId = reader.ReadULong();
+        this.playerId = reader.ReadULong();
     }
 
     public override string ToString()
     {
-        return $"[MIEMOD]: QuickRestartMessage: lobbyId={lobbyId}";
+        return $"[MIEMOD]: QuickRestartMessage: playerId={playerId}";
     }
 }

@@ -5,15 +5,15 @@ internal static class QuickRestartState
     private static readonly object Sync = new();
 
     private static bool _pendingRestart;
-    private static ulong _pendingLobbyId;
+    private static ulong _pendingPlayerId;
     private static bool _pendingAutoReady;
 
-    public static void SetPendingRestart(ulong lobbyId)
+    public static void SetPendingRestart(ulong playerId)
     {
         lock (Sync)
         {
             _pendingRestart = true;
-            _pendingLobbyId = lobbyId;
+            _pendingPlayerId = playerId;
             _pendingAutoReady = false;
         }
     }
@@ -26,20 +26,20 @@ internal static class QuickRestartState
         }
     }
 
-    public static bool TryConsumePendingRestart(out ulong lobbyId)
+    public static bool TryConsumePendingRestart(out ulong playerId)
     {
         lock (Sync)
         {
             if (!_pendingRestart)
             {
-                lobbyId = 0;
+                playerId = 0;
                 return false;
             }
 
-            lobbyId = _pendingLobbyId;
+            playerId = _pendingPlayerId;
 
             _pendingRestart = false;
-            _pendingLobbyId = 0;
+            _pendingPlayerId = 0;
             return true;
         }
     }
@@ -63,7 +63,7 @@ internal static class QuickRestartState
         lock (Sync)
         {
             _pendingRestart = false;
-            _pendingLobbyId = 0;
+            _pendingPlayerId = 0;
             _pendingAutoReady = false;
         }
     }

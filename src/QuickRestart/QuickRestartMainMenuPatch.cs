@@ -12,16 +12,16 @@ static class QuickRestartMainMenuPatch
 {
     static void Postfix(NMainMenu __instance)
     {
-        if (!QuickRestartState.TryConsumePendingRestart(out var lobbyId))
+        if (!QuickRestartState.TryConsumePendingRestart(out var playerId))
         {
             Log.Info("[MIEMOD]: Tried to consume pending restart on main menu, but none was pending.");
             return;
         }
 
-        Log.Info($"[MIEMOD]: Consumed pending restart on main menu. lobbyId={lobbyId}");
+        Log.Info($"[MIEMOD]: Consumed pending restart on main menu. playerId={playerId}");
 
-        // if (CommandLineHelper.HasArg("fastmp"))
-        if (true)
+        if (CommandLineHelper.HasArg("fastmp"))
+        // if (true)
         {
             QuickRestartState.SetAutoReady(true);
             __instance.OpenMultiplayerSubmenu().OnJoinFriendsPressed();
@@ -29,10 +29,10 @@ static class QuickRestartMainMenuPatch
             return;
         }
 
-        var steamInitializer = SteamClientConnectionInitializer.FromLobby(lobbyId);
+        var steamInitializer = SteamClientConnectionInitializer.FromPlayer(playerId);
         if (steamInitializer == null)
         {
-            Log.Warn("[MIEMOD]: Failed to create Steam connection initializer from lobby ID, aborting quick restart.");
+            Log.Warn("[MIEMOD]: Failed to create Steam connection initializer from player ID, aborting quick restart.");
             return;
         }
 

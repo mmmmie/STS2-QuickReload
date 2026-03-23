@@ -24,14 +24,14 @@ static class QuickRestartNetworkPatch
 
     static void OnQuickRestartMessage(QuickRestartMessage message, ulong senderId)
     {
-        Log.Info($"[MIEMOD]: QuickRestartMessage received from {senderId}. lobbyId={message.lobbyId}");
+        Log.Info($"[MIEMOD]: QuickRestartMessage received from {senderId}. playerId={message.playerId}");
         if (RunManager.Instance.NetService.Type == NetGameType.Host)
         {
             Log.Info("[MIEMOD]: QuickRestartMessage received on host, ignoring.");
             return;
         }
 
-        QuickRestartState.SetPendingRestart(message.lobbyId);
+        QuickRestartState.SetPendingRestart(message.playerId);
         Log.Info("[MIEMOD]: QuickRestart pending state set for client.");
     }
 }

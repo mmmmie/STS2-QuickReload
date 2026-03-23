@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>true</ImplicitUsings>
-        <Nullable>enable</Nullable> <!--Makes code analysis regarding null values stricter.-->
+        <Nullable>enable</Nullable>        <!--Makes code analysis regarding null values stricter.-->
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DefaultItemExcludes>$(DefaultItemExcludes);packages/**</DefaultItemExcludes>
         <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
@@ -19,6 +19,8 @@
         <Sts2Path>$(SteamLibraryPath)/common/Slay the Spire 2</Sts2Path>
         <ModsPath>$(Sts2Path)/SlayTheSpire2.app/Contents/MacOS/mods/</ModsPath>
         <Sts2DataDir>$(Sts2Path)/SlayTheSpire2.app/Contents/Resources/data_sts2_macos_x86_64</Sts2DataDir>
+
+        <SteamworksNetPath Condition="'$(SteamworksNetPath)' == ''">$(Sts2DataDir)/Steamworks.NET.dll</SteamworksNetPath>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -39,6 +41,14 @@
         </Reference>
         <AdditionalFiles Include="MieMod/localization/**/*.json"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Steamworks.NET">
+            <HintPath>$(SteamworksNetPath)</HintPath>
+            <Private>false</Private>
+        </Reference>
+    </ItemGroup>
+
 
     <Target Name="CheckDependencyPaths">
         <Error Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'" Condition="'$(Sts2DataDir)' == '' or !Exists('$(Sts2DataDir)')"/>

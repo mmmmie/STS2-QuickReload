@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Multiplayer;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
+using MegaCrit.Sts2.Core.Multiplayer.Transport.Steam;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Audio;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
@@ -87,18 +88,18 @@ static class QuickRestartRunner
         var game = NGame.Instance ??
                    throw new InvalidOperationException("[MIEMOD]: NGame.Instance was null during quick restart.");
 
+        if (CommandLineHelper.HasArg("fastmp"))
+        {
+            Log.Warn("[MIEMOD]: fastmp not implemented.");
+            return;
+        }
         var netService = RunManager.Instance.NetService;
         if (netService is { IsConnected: true })
         {
-            ulong lobbyId = 0;
-            var rawLobbyId = netService.GetRawLobbyIdentifier();
-            if (!string.IsNullOrEmpty(rawLobbyId) && !ulong.TryParse(rawLobbyId, out lobbyId))
-            {
-                Log.Warn($"[MIEMOD]: Failed to parse lobby id from '{rawLobbyId}', defaulting to 0.");
-            }
+            ulong playerId = Steamworks.SteamUser.GetSteamID().m_SteamID;
 
-            netService.SendMessage(new QuickRestartMessage { lobbyId = lobbyId });
-            Log.Info($"[MIEMOD]: Sent QuickRestartMessage before cleanup. lobbyId={lobbyId}");
+            netService.SendMessage(new QuickRestartMessage { playerId = playerId });
+            Log.Info($"[MIEMOD]: Sent QuickRestartMessage before cleanup. playerId={playerId}");
         }
         else
         {
@@ -111,7 +112,6 @@ static class QuickRestartRunner
 
         var mainMenu = NMainMenu.Create(false);
         game.RootSceneContainer.SetCurrentScene(mainMenu);
-        // mainMenu.SubmenuStack = mainMenu.GetNode<NMainMenuSubmenuStack>((NodePath) "%Submenus");
 
         NMultiplayerSubmenu? multiplayerSubmenu = mainMenu.OpenMultiplayerSubmenu();
 
