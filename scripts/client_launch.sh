@@ -2,6 +2,8 @@
 set -euo pipefail
 set -x
 
+cd "$(dirname "$0")/.."
+
 disable_remote_debug=false
 for arg in "$@"; do
   case "$arg" in
