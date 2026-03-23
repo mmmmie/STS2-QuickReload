@@ -20,8 +20,7 @@ static class QuickReloadMainMenuPatch
 
         Log.Info($"[QUICKRELOAD]: Consumed pending restart on main menu. playerId={playerId}");
 
-        if (CommandLineHelper.HasArg("fastmp"))
-        // if (true)
+        if (CommandLineHelper.HasArg("fastmp") || CommandLineHelper.HasArg("clientId"))
         {
             QuickReloadState.SetAutoReady(true);
             __instance.OpenMultiplayerSubmenu().OnJoinFriendsPressed();

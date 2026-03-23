@@ -31,17 +31,27 @@ static class QuickReloadRunner
         {
             Log.Info("[QUICKRELOAD]: Single player run detected, restarting.");
             DisablePauseMenuButtons(pauseMenu);
-            await RestartSinglePlayer();
+            bool ret = await RestartSinglePlayer();
+            if (ret)
+            {
+                Log.Warn("[QUICKRELOAD]: RestartSinglePlayer returned early with ret=true, enabling pause menu buttons.");
+                EnablePauseMenuButtons(pauseMenu);
+            }
         }
         else
         {
             Log.Info("[QUICKRELOAD]: Multiplayer run detected, restarting.");
             DisablePauseMenuButtons(pauseMenu);
-            await RestartMultiPlayer();
+            bool ret = await RestartMultiPlayer();
+            if (ret)
+            {
+                Log.Warn("[QUICKRELOAD]: RestartMultiPlayer returned early with ret=true, enabling pause menu buttons.");
+                EnablePauseMenuButtons(pauseMenu);
+            }
         }
     }
 
-    private static async Task RestartSinglePlayer()
+    private static async Task<bool> RestartSinglePlayer()
     {
         SerializableRun serializableRun;
         RunState runState;
@@ -57,7 +67,7 @@ static class QuickReloadRunner
         catch (Exception ex)
         {
             Log.Error($"[QUICKRELOAD]: Save validation failed: {ex}");
-            return;
+            return true;
         }
 
         var game = NGame.Instance ??
@@ -80,22 +90,18 @@ static class QuickReloadRunner
             Log.Error($"[QUICKRELOAD]: Run load failed after cleanup: {ex}");
             await game.ReturnToMainMenu();
         }
+        return false;
     }
 
-    private static async Task RestartMultiPlayer()
+    private static async Task<bool> RestartMultiPlayer()
     {
         var game = NGame.Instance ??
                    throw new InvalidOperationException("[QUICKRELOAD]: NGame.Instance was null during quick restart.");
 
-        if (CommandLineHelper.HasArg("fastmp"))
-        {
-            Log.Warn("[QUICKRELOAD]: fastmp not implemented.");
-            return;
-        }
         var netService = RunManager.Instance.NetService;
         if (netService is { IsConnected: true })
         {
-            ulong playerId = Steamworks.SteamUser.GetSteamID().m_SteamID;
+            ulong playerId = CommandLineHelper.HasArg("fastmp") ? 1003 : Steamworks.SteamUser.GetSteamID().m_SteamID;
 
             netService.SendMessage(new QuickReloadMessage { playerId = playerId });
             Log.Info($"[QUICKRELOAD]: Sent QuickReloadMessage before cleanup. playerId={playerId}");
@@ -125,11 +131,12 @@ static class QuickReloadRunner
         if (!readSaveResult.Success || readSaveResult.SaveData == null)
         {
             Log.Warn("[QUICKRELOAD]: Broken multiplayer run save detected, big problem");
-            return;
+            return true;
         }
 
         QuickReloadState.SetAutoReady(true);
         multiplayerSubmenu.StartHost(readSaveResult.SaveData);
+        return false;
     }
 
     private static async Task WaitForPendingSave()
@@ -157,6 +164,18 @@ static class QuickReloadRunner
             if (button is NPauseMenuButton pauseMenuButton)
             {
                 pauseMenuButton.Disable();
+            }
+        }
+    }
+
+    private static void EnablePauseMenuButtons(NPauseMenu pauseMenu)
+    {
+        var buttonContainer = pauseMenu.GetNode<VBoxContainer>("PanelContainer/ButtonContainer");
+        foreach (var button in buttonContainer.GetChildren())
+        {
+            if (button is NPauseMenuButton pauseMenuButton)
+            {
+                pauseMenuButton.Enable();
             }
         }
     }
