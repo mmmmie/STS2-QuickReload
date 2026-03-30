@@ -17,6 +17,7 @@ obj/
 # IDEs
 .idea/
 .vs/
+.vscode/
 *.user
 *.rsuser
 *.suo
