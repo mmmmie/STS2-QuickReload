@@ -108,7 +108,6 @@ static class QuickReloadRunner
     {
         var game = NGame.Instance ??
                    throw new InvalidOperationException("[QUICKRELOAD]: NGame.Instance was null during quick restart.");
-        QuickReloadState.SetPendingVisualRecovery();
 
         var netService = RunManager.Instance.NetService;
         if (netService is { IsConnected: true })
@@ -143,7 +142,6 @@ static class QuickReloadRunner
         if (!readSaveResult.Success || readSaveResult.SaveData == null)
         {
             Log.Warn("[QUICKRELOAD]: Broken multiplayer run save detected, big problem");
-            QuickReloadState.ClearPendingVisualRecovery();
             return true;
         }
 
