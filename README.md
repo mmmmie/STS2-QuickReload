@@ -1,8 +1,8 @@
 # QuickReload
 
-QuickReload is a Slay the Spire 2 mod that adds fast run reload from the pause menu, including multiplayer support.
+QuickReload is a Slay the Spire 2 mod that adds fast run reload from the pause menu and an in-run F5 hotkey, including multiplayer support.
 
-During a run, open the pause menu (`Esc`) and press the `Reload` button. This reloads the run from the last autosave.
+During a run, open the pause menu (`Esc`) and press the `Reload` button, or press `F5` during gameplay. This reloads the run from the last autosave.
 
 ## Install
 
