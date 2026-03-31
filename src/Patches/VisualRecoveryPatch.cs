@@ -22,23 +22,32 @@ static class VisualRecoveryPatch
 
     private static async Task RecoverVisualStateAsync(NRun run)
     {
+        Log.Info("[QUICKRELOAD]: Starting visual recovery process after reload.");
         try
         {
             var tree = run.GetTree();
-            if (tree != null)
+            var game = NGame.Instance;
+            if (tree == null || game?.Transition == null)
             {
-                // Wait one frame so the scene finishes entering before forcing fade in.
+                return;
+            }
+
+            const int maxFramesToWait = 180; // ~3 seconds at 60fps.
+            for (var i = 0; i < maxFramesToWait; i++)
+            {
+                if (!game.Transition.InTransition)
+                {
+                    NModalContainer.Instance?.Clear();
+                    Log.Info("[QUICKRELOAD]: Transition recovered naturally; forced visual recovery not needed.");
+                    return;
+                }
+
                 await run.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
             }
 
-            var game = NGame.Instance;
-            if (game?.Transition != null)
-            {
-                await game.Transition.FadeIn(0.01f);
-                Log.Info("[QUICKRELOAD]: Applied post-reload visual recovery fade-in.");
-            }
-
+            await game.Transition.FadeIn(0.2f);
             NModalContainer.Instance?.Clear();
+            Log.Info("[QUICKRELOAD]: Applied forced visual recovery fade-in after transition timeout.");
         }
         catch (Exception ex)
         {
